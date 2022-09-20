@@ -9,11 +9,11 @@ import 'package:instagram/utils/colors.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  runApp(const Instagram());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Instagram extends StatelessWidget {
+  const Instagram({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
