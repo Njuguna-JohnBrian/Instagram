@@ -83,6 +83,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       onPressed: selectImage,
                       icon: const Icon(
                         Icons.add_a_photo,
+                        color: Color.fromARGB(255, 138, 134, 134),
                       ),
                     ),
                   )
