@@ -53,9 +53,15 @@ class AuthMethods {
         // });
         res = 'Success';
       }
-    } catch (err) {
-      res = err.toString();
+    } on FirebaseAuthException catch (err) {
+      if (err.code == 'weak-password') {
+        res = 'Password should be atleast 6 characters';
+      } else if (err.code == 'invalid-email') {
+        res = 'The email address is badly formatted.';
+      } else if (err.code == 'email-already-in-use') {
+        res = 'The email address is already in use by another account.';
+      }
     }
-    return res;
+    return res.toString();
   }
 }
