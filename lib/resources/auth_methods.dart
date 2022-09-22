@@ -19,10 +19,10 @@ class AuthMethods {
   }) async {
     String res = 'Some error occurred';
     try {
-      if (email.isNotEmpty ||
-          password.isNotEmpty ||
-          username.isNotEmpty ||
-          bio.isNotEmpty ||
+      if (email.isNotEmpty &&
+          password.isNotEmpty &&
+          username.isNotEmpty &&
+          bio.isNotEmpty &&
           file != null) {
         // register user
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
@@ -72,7 +72,7 @@ class AuthMethods {
       {required String email, required String password}) async {
     String res = "Some error occured";
     try {
-      if (email.isNotEmpty || password.isNotEmpty) {
+      if (email.isNotEmpty && password.isNotEmpty) {
         await _auth.signInWithEmailAndPassword(
             email: email, password: password);
         res = "Success";
