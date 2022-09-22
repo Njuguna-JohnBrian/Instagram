@@ -52,6 +52,8 @@ class AuthMethods {
         //   'following': []
         // });
         res = 'Success';
+      } else {
+        res = "Please enter all fields";
       }
     } on FirebaseAuthException catch (err) {
       if (err.code == 'weak-password') {
@@ -60,6 +62,30 @@ class AuthMethods {
         res = 'The email address is badly formatted.';
       } else if (err.code == 'email-already-in-use') {
         res = 'The email address is already in use by another account.';
+      }
+    }
+    return res.toString();
+  }
+
+  // Logging In User
+  Future<String> loginUser(
+      {required String email, required String password}) async {
+    String res = "Some error occured";
+    try {
+      if (email.isNotEmpty || password.isNotEmpty) {
+        await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
+        res = "Success";
+      } else {
+        res = "Please enter all fields";
+      }
+    } on FirebaseAuthException catch (err) {
+      if (err.code == 'network-request-failed') {
+        res = "Network Error";
+      } else if (err.code == 'user-not-found') {
+        res = 'Wrong credentials.Please retry';
+      } else if (err.code == 'wrong-password') {
+        res = 'The password is invalid';
       }
     }
     return res.toString();
