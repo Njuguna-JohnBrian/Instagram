@@ -21,6 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   Uint8List? _image;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -39,6 +40,9 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void signUpUser() async {
+    setState(() {
+      _isLoading = true;
+    });
     String res = await AuthMethods().signUpUser(
       email: _emailController.text,
       password: _passwordController.text,
@@ -46,6 +50,9 @@ class _SignupScreenState extends State<SignupScreen> {
       bio: _bioController.text,
       file: _image!,
     );
+    setState(() {
+      _isLoading = false;
+    });
     if (res != "Success") {
       showSnackBar(res, context);
     }
@@ -159,17 +166,23 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     color: blueColor,
                   ),
-                  child: const Text(
-                    'Sign Up',
-                  ),
+                  child: _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: primaryColor,
+                          ),
+                        )
+                      : const Text(
+                          'Sign Up',
+                        ),
                 ),
               ),
               const SizedBox(
-                height: 12,
+                height: 10,
               ),
               // signup transition
               Flexible(
-                flex: 2,
+                flex: 1,
                 child: Container(),
               ),
               Row(
