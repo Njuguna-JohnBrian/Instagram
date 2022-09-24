@@ -14,97 +14,114 @@ class AddPostScreen extends StatefulWidget {
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
+  Uint8List? _file;
   _selectImage(BuildContext context) async {
     ///Shows a dialog to fetch image from camera
-    return showDialog(context: context, builder: (context) {
-      return SimpleDialog(
-        title: const Text('Create a Post'),
-        children: [
-          SimpleDialogOption(
-            padding: EdgeInsets.all(20),
-            child: const Text('Take a photo'),
-            onPressed: ()async{
-              Navigator.of(context).pop();
-              Uint8List file = await pickImage(ImageSource.camera);
-            },
-          )
-        ],
-      );
-    });
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: const Text('Create a Post'),
+            children: [
+              SimpleDialogOption(
+                padding: EdgeInsets.all(20),
+                child: const Text('Take a photo'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  Uint8List file = await pickImage(ImageSource.camera);
+                  setState(() {
+                    _file = file;
+                  });
+                },
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(20),
+                child: const Text('Select from gallery'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  Uint8List file = await pickImage(ImageSource.gallery);
+                  setState(() {
+                    _file = file;
+                  });
+                },
+              )
+            ],
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    // return Center(
-    //   child: IconButton(
-    //     icon: const Icon(Icons.upload),
-    //     onPressed: (){}
-    //   ),
-    // );
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: mobileBackgroundColor,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {},
-        ),
-        title: const Text('Post to'),
-        centerTitle: false,
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              'Post',
-              style: TextStyle(
-                  color: Colors.blueAccent,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16),
+    return _file == null
+        ? Center(
+            child: IconButton(icon: const Icon(Icons.upload),
+                onPressed: () => _selectImage(context),
             ),
           )
-        ],
-      ),
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage('https://tinyurl.com/t8jh4und'),
+        : Scaffold(
+            appBar: AppBar(
+              backgroundColor: mobileBackgroundColor,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {},
               ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.45,
-                child: TextField(
-                  decoration: const InputDecoration(
-                    hintText: 'Write a caption...',
-                    border: InputBorder.none,
+              title: const Text('Post to'),
+              centerTitle: false,
+              actions: [
+                TextButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'Post',
+                    style: TextStyle(
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
                   ),
-                  maxLines: 8,
-                ),
-              ),
-              SizedBox(
-                height: 45,
-                width: 45,
-                child: AspectRatio(
-                  aspectRatio: 487 / 451,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                      image: NetworkImage(
-                        'https://tinyurl.com/t8jh4und',
+                )
+              ],
+            ),
+            body: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      backgroundImage:
+                          NetworkImage('https://tinyurl.com/t8jh4und'),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.45,
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          hintText: 'Write a caption...',
+                          border: InputBorder.none,
+                        ),
+                        maxLines: 8,
                       ),
-                      fit: BoxFit.fill,
-                      alignment: FractionalOffset.topCenter,
-                    )),
-                  ),
-                ),
-              ),
-              const Divider(),
-            ],
-          )
-        ],
-      ),
-    );
+                    ),
+                    SizedBox(
+                      height: 45,
+                      width: 45,
+                      child: AspectRatio(
+                        aspectRatio: 487 / 451,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                            image: NetworkImage(
+                              'https://tinyurl.com/t8jh4und',
+                            ),
+                            fit: BoxFit.fill,
+                            alignment: FractionalOffset.topCenter,
+                          )),
+                        ),
+                      ),
+                    ),
+                    const Divider(),
+                  ],
+                )
+              ],
+            ),
+          );
   }
 }
