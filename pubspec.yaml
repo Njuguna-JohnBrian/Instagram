@@ -7,11 +7,11 @@ environment:
   sdk: ">=2.17.6 <3.0.0"
 
 dependencies:
-  cloud_firestore: ^3.4.8
+  cloud_firestore: ^3.1.4
   cupertino_icons: ^1.0.2
-  firebase_auth: ^3.9.0
-  firebase_core: ^1.22.0
-  firebase_storage: ^10.3.8
+  firebase_auth: ^3.3.3
+  firebase_core: ^1.10.5
+  firebase_storage: ^10.2.3
   flutter:
     sdk: flutter
   flutter_svg: ^1.1.5
