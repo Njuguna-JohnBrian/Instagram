@@ -51,7 +51,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
           Text('Yes'),
           Text('No'),
           Text('No'),
-          Text('No00'),
+          Text('No'),
         ],
         physics: const NeverScrollableScrollPhysics(),
         controller: pageController,
