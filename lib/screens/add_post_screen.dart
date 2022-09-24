@@ -1,4 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram/utils/utils.dart';
 
 import '../utils/colors.dart';
 
@@ -10,6 +14,25 @@ class AddPostScreen extends StatefulWidget {
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
+  _selectImage(BuildContext context) async {
+    ///Shows a dialog to fetch image from camera
+    return showDialog(context: context, builder: (context) {
+      return SimpleDialog(
+        title: const Text('Create a Post'),
+        children: [
+          SimpleDialogOption(
+            padding: EdgeInsets.all(20),
+            child: const Text('Take a photo'),
+            onPressed: ()async{
+              Navigator.of(context).pop();
+              Uint8List file = await pickImage(ImageSource.camera);
+            },
+          )
+        ],
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // return Center(
@@ -64,20 +87,18 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 height: 45,
                 width: 45,
                 child: AspectRatio(
-                  aspectRatio: 487/451,
+                  aspectRatio: 487 / 451,
                   child: Container(
                     decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage('https://tinyurl.com/t8jh4und',
-
-                        ),
-                        fit: BoxFit.fill,
-                        alignment: FractionalOffset.topCenter,
-                      )
-                    ),
+                        image: DecorationImage(
+                      image: NetworkImage(
+                        'https://tinyurl.com/t8jh4und',
+                      ),
+                      fit: BoxFit.fill,
+                      alignment: FractionalOffset.topCenter,
+                    )),
                   ),
                 ),
-
               ),
               const Divider(),
             ],
