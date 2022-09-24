@@ -1,7 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:provider/provider.dart';
+
+import '../models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:instagram/providers/user_provider.dart';
 import 'package:instagram/utils/utils.dart';
 
 import '../utils/colors.dart';
@@ -52,10 +56,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final UserProvider userProvider = Provider.of<UserProvider>(context);
     return _file == null
         ? Center(
-            child: IconButton(icon: const Icon(Icons.upload),
-                onPressed: () => _selectImage(context),
+            child: IconButton(
+              icon: const Icon(Icons.upload),
+              onPressed: () => _selectImage(context),
             ),
           )
         : Scaffold(
@@ -87,9 +93,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CircleAvatar(
-                      backgroundImage:
-                          NetworkImage('https://tinyurl.com/t8jh4und'),
-                    ),
+                            backgroundImage:
+                                NetworkImage(userProvider.getUser.photoUrl),
+                          ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.45,
                       child: TextField(
