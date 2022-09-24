@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram/providers/user_provider.dart';
+import 'package:instagram/utils/global_variables.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart' as model;
 import '../utils/colors.dart';
@@ -47,15 +48,10 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
 
     return Scaffold(
       body: PageView(
-        children: [
-          Text('Yes'),
-          Text('No'),
-          Text('No'),
-          Text('No'),
-        ],
         physics: const NeverScrollableScrollPhysics(),
         controller: pageController,
         onPageChanged: onPageChanged,
+        children: homeScreenItems,
       ),
       bottomNavigationBar: CupertinoTabBar(
         items: [
