@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:instagram/resources/firestore_methods.dart';
 import 'package:provider/provider.dart';
 
 import '../models/user.dart';
@@ -19,7 +20,50 @@ class AddPostScreen extends StatefulWidget {
 
 class _AddPostScreenState extends State<AddPostScreen> {
   Uint8List? _file;
-  final TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+  bool _isLoading = false;
+  void postImage(String uid, String username, String profileImage) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      String res = await FirestoreMethods().uploadPost(
+        _descriptionController.text,
+        _file!,
+        uid,
+        username,
+        profileImage,
+      );
+      setState(() {
+        _isLoading = false;
+      });
+      if (res == 'Success') {
+        print(res);
+        showSnackBar(
+          'Posted',
+          context,
+        );
+        clearImage();
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        showSnackBar(
+          res,
+          context,
+        );
+      }
+    } catch (err) {
+      setState(() {
+        _isLoading = false;
+      });
+      showSnackBar(
+        err.toString(),
+        context,
+      );
+    }
+  }
+
   _selectImage(BuildContext context) async {
     ///Shows a dialog to fetch image from camera
     return showDialog(
@@ -66,6 +110,18 @@ class _AddPostScreenState extends State<AddPostScreen> {
         });
   }
 
+  void clearImage() {
+    setState(() {
+      _file = null;
+    });
+  }
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final UserProvider userProvider = Provider.of<UserProvider>(context);
@@ -81,13 +137,17 @@ class _AddPostScreenState extends State<AddPostScreen> {
               backgroundColor: mobileBackgroundColor,
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
-                onPressed: () {},
+                onPressed: clearImage,
               ),
               title: const Text('Post to'),
               centerTitle: false,
               actions: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () => postImage(
+                    userProvider.getUser.uid,
+                    userProvider.getUser.username,
+                    userProvider.getUser.photoUrl,
+                  ),
                   child: const Text(
                     'Post',
                     style: TextStyle(
@@ -100,6 +160,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
             ),
             body: Column(
               children: [
+                _isLoading
+                    ? LinearProgressIndicator()
+                    : Padding(
+                        padding: EdgeInsets.only(top: 0),
+                      ),
+                Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,6 +178,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       width: MediaQuery.of(context).size.width * 0.45,
                       child: TextField(
                         controller: _descriptionController,
+                        enabled: !_isLoading,
                         decoration: const InputDecoration(
                           hintText: 'Write a caption...',
                           border: InputBorder.none,
