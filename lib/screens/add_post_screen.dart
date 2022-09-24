@@ -19,6 +19,7 @@ class AddPostScreen extends StatefulWidget {
 
 class _AddPostScreenState extends State<AddPostScreen> {
   Uint8List? _file;
+  final TextEditingController _descriptionController = TextEditingController();
   _selectImage(BuildContext context) async {
     ///Shows a dialog to fetch image from camera
     return showDialog(
@@ -33,9 +34,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 onPressed: () async {
                   Navigator.of(context).pop();
                   Uint8List file = await pickImage(ImageSource.camera);
-                  setState(() {
-                    _file = file;
-                  });
+                  setState(
+                    () {
+                      _file = file;
+                    },
+                  );
                 },
               ),
               SimpleDialogOption(
@@ -44,9 +47,18 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 onPressed: () async {
                   Navigator.of(context).pop();
                   Uint8List file = await pickImage(ImageSource.gallery);
-                  setState(() {
-                    _file = file;
-                  });
+                  setState(
+                    () {
+                      _file = file;
+                    },
+                  );
+                },
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.all(20),
+                child: const Text('Cancel'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
                 },
               )
             ],
@@ -93,12 +105,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CircleAvatar(
-                            backgroundImage:
-                                NetworkImage(userProvider.getUser.photoUrl),
-                          ),
+                      backgroundImage:
+                          NetworkImage(userProvider.getUser.photoUrl),
+                    ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.45,
                       child: TextField(
+                        controller: _descriptionController,
                         decoration: const InputDecoration(
                           hintText: 'Write a caption...',
                           border: InputBorder.none,
@@ -114,9 +127,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                            image: NetworkImage(
-                              'https://tinyurl.com/t8jh4und',
-                            ),
+                            image: MemoryImage(_file!),
                             fit: BoxFit.fill,
                             alignment: FractionalOffset.topCenter,
                           )),
