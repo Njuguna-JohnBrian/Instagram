@@ -16,7 +16,7 @@ class FirestoreMethods {
     String username,
     String profImage,
   ) async {
-    String res = 'Some error occured';
+    String res = 'Some error occurred';
     try {
       String photoUrl =
           await StorageMethods().uploadImageToStorage('posts', file, true);
@@ -54,5 +54,37 @@ class FirestoreMethods {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  Future<String> postComment(String postId, String text, String uid,
+      String name, String profilePic) async {
+    String res = 'Some error occured';
+    try {
+      if (text.isNotEmpty) {
+        String commentId = const Uuid().v1();
+        await _firestore
+            .collection('posts')
+            .doc(postId)
+            .collection('comments')
+            .doc(commentId)
+            .set(
+          {
+            'profilePic': profilePic,
+            'name': name,
+            'uid': uid,
+            'text': text,
+            'commentId': commentId,
+            'datePublished': DateTime.now(),
+          },
+        );
+        res = 'Success';
+      } else {
+        res = "Please enter a comment";
+      }
+    } catch (err) {
+      res = err.toString();
+      return res;
+    }
+    return res.toString();
   }
 }
