@@ -7,6 +7,7 @@ import 'package:instagram/utils/utils.dart';
 import 'package:instagram/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../providers/user_provider.dart';
 
@@ -36,12 +37,10 @@ class _PostCardState extends State<PostCard> {
           .collection('comments')
           .get();
       commentLen = snap.docs.length;
-    }catch(err){
+    } catch (err) {
       showSnackBar(err.toString(), context);
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -140,8 +139,9 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.35,
                   width: double.infinity,
-                  child: Image.network(
-                    widget.snap['postUrl'],
+                  child: FadeInImage.memoryNetwork(
+                    placeholder:kTransparentImage,
+                    image:'${widget.snap['postUrl']}',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -269,17 +269,29 @@ class _PostCardState extends State<PostCard> {
                 InkWell(
                   onTap: () {},
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 4,
-                    ),
-                    child: Text(
-                      'View all ${commentLen} comments',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: secondaryColor,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 4,
                       ),
-                    ),
-                  ),
+                      child: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('posts')
+                            .doc(widget.snap['postId'])
+                            .collection('comments')
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator(
+                              color: primaryColor,
+                            ));
+                          }
+                          commentLen = snapshot.data!.docs.length;
+                          return Text('View all $commentLen comments');
+                        },
+                      )),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
