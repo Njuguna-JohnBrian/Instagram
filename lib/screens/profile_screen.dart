@@ -74,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       radius: 40,
                     ),
                     Expanded(
-                      flex: 2,
+                      flex: 1,
                       child: Column(
                         children: [
                           Row(
