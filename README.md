@@ -1,4 +1,4 @@
-# instagram
+# PostIt
 
 A new Flutter project.
 
