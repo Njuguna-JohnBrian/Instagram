@@ -38,14 +38,14 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       body: isShowUsers
-          ? FutureBuilder(
-              future: FirebaseFirestore.instance
+          ? StreamBuilder(
+              stream: FirebaseFirestore.instance
                   .collection('users')
                   .where('username',
                       isGreaterThanOrEqualTo: searchController.text)
-                  .get(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
