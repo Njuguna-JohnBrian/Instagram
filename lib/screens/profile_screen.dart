@@ -6,6 +6,7 @@ import 'package:instagram/utils/colors.dart';
 import 'package:instagram/utils/utils.dart';
 
 import '../widgets/follow_button.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
@@ -118,10 +119,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ? FollowButton(
                                             backgroundColor:
                                                 mobileBackgroundColor,
-                                            text: 'Edit Profile',
+                                            text: 'Sign Out',
                                             borderColor: Colors.grey,
                                             textColor: primaryColor,
-                                            function: () {},
+                                            function: () {
+                                              FirebaseAuth.instance.signOut();
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LoginScreen(),
+                                                ),
+                                              );
+                                            },
                                           )
                                         : isFollowing
                                             ? FollowButton(
