@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram/resources/firestore_methods.dart';
 import 'package:instagram/screens/comments_screen.dart';
 import 'package:instagram/utils/colors.dart';
+import 'package:instagram/utils/global_variables.dart';
 import 'package:instagram/utils/utils.dart';
 import 'package:instagram/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
@@ -22,11 +23,17 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   bool isLikeAnimating = false;
   int commentLen = 0;
+  getData() async{
+    UserProvider _userProvider =
+    Provider.of<UserProvider>(context, listen: false);
+    await _userProvider.refreshUser();
+  }
 
   @override
   void initState() {
     super.initState();
     getComments();
+    getData();
   }
 
   getComments() async {
@@ -46,9 +53,15 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final UserProvider userProvider = Provider.of<UserProvider>(context);
+    final width = MediaQuery.of(context).size.width;
 
     return Container(
-      color: mobileBackgroundColor,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: width > webScreenSize ? secondaryColor : mobileBackgroundColor,
+        ),
+        color: mobileBackgroundColor,
+      ),
       padding: EdgeInsets.symmetric(
         vertical: 10,
       ),
@@ -177,17 +190,17 @@ class _PostCardState extends State<PostCard> {
             children: [
               LikeAnimation(
                 isAnimating:
-                    widget.snap['likes'].contains(userProvider.getUser.uid),
+                    widget.snap['likes'].contains(widget.snap['uid']),
                 smallLike: true,
                 child: IconButton(
                   onPressed: () async {
                     await FirestoreMethods().likePost(widget.snap['postId'],
-                        userProvider.getUser.uid, widget.snap['likes']);
+                        widget.snap['uid'], widget.snap['likes']);
                     setState(() {
                       isLikeAnimating = true;
                     });
                   },
-                  icon: widget.snap['likes'].contains(userProvider.getUser.uid)
+                  icon: widget.snap['likes'].contains(widget.snap['uid'])
                       ? const Icon(
                           Icons.favorite,
                           color: Colors.red,
@@ -276,14 +289,14 @@ class _PostCardState extends State<PostCard> {
                       padding: const EdgeInsets.symmetric(
                         vertical: 4,
                       ),
-                      child: StreamBuilder(
+                      child: StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
                             .collection('posts')
                             .doc(widget.snap['postId'])
                             .collection('comments')
                             .snapshots(),
                         builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                            AsyncSnapshot
                                 snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -292,7 +305,7 @@ class _PostCardState extends State<PostCard> {
                               color: primaryColor,
                             ));
                           }
-                          commentLen = snapshot.data!.docs.length;
+                          commentLen = snapshot.data.docs.length;
                           return Text('View all $commentLen comments');
                         },
                       )),

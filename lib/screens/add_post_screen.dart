@@ -121,6 +121,17 @@ class _AddPostScreenState extends State<AddPostScreen> {
     _descriptionController.dispose();
     super.dispose();
   }
+  getData() async{
+    UserProvider _userProvider =
+    Provider.of<UserProvider>(context, listen: false);
+    await _userProvider.refreshUser();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {

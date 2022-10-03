@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram/resources/auth_methods.dart';
 import 'package:instagram/screens/signup_screen.dart';
 import 'package:instagram/utils/colors.dart';
+import 'package:instagram/utils/global_variables.dart';
 import 'package:instagram/utils/utils.dart';
 import 'package:instagram/widgets/text_field_input.dart';
 
@@ -67,7 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(
+          padding:MediaQuery.of(context).size.width > webScreenSize ?  EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width/3,
+          ):const EdgeInsets.symmetric(
             horizontal: 32,
           ),
           width: double.infinity,
